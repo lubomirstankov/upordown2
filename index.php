@@ -1,16 +1,27 @@
 <?php 
-include ("topsites.php");
-error_reporting(0);
+error_reporting(ALL);
 //Съобщение
 $msg = "";
-
+include ("topsites.php");
 // $_GET Функция
-$isonline = $_GET['isonline'];
+$check = $_GET['check'];
 
 
-// Дали е онлайн?
-if ($isonline) {
-if (gethostbyname($isonline) != $isonline) {
+// Дали е онлайн? *NEW Функция
+function isonline($isonline) {
+   $curlInit = curl_init($isonline);
+   curl_setopt($curlInit,CURLOPT_CONNECTTIMEOUT,10);
+   curl_setopt($curlInit,CURLOPT_HEADER,true);
+   curl_setopt($curlInit,CURLOPT_NOBODY,true);
+   curl_setopt($curlInit,CURLOPT_RETURNTRANSFER,true);
+
+   $execute = curl_exec($curlInit);
+   curl_close($curlInit);
+   if ($execute) return true;
+   return false;
+}
+if ($check) {
+if (isonline($check)) {
     $msg = "<center>
 <i class='fa fa-plug' aria-hidden='true'></i> Хмм.. Сайта изглежда, че работи! :)
 </center>";
@@ -20,6 +31,8 @@ $msg = "<center>
 </center>";
 }
 }
+
+
 ?><!DOCTYPE html>
 <!-- HEAD -->
 <head>
@@ -47,7 +60,7 @@ $msg = "<center>
 <fieldset>
 <legend><span class="number"><i class="fa fa-cog fa-spin fa-1x fa-fw"></i></i></span> Работи ли?</legend>
     <br />
-<input type="text" name="isonline" id="urlr" placeholder="http://">
+<input type="text" name="check" id="urlr" placeholder="http://">
 </fieldset>
     <input type="submit" value="Провери?" />
 </form>
@@ -61,11 +74,13 @@ $msg = "<center>
     <th><center>Facebook</center></th>
   </tr>
   <tr>
-    <td><?php echo $msg1; ?></td>
-    <td><?php echo $msg2; ?></td>
-    <td><?php echo $msg3; ?></td>
+    <td><center><i class='fa fa-plug' aria-hidden='true'></i> <font color='green'><?php echo $result; ?></center></td>
+    <td><center><i class='fa fa-plug' aria-hidden='true'></i> <font color='green'><?php echo $result2; ?></center></td>
+    <td><center><i class='fa fa-plug' aria-hidden='true'></i> <font color='green'><?php echo $result3; ?></center></td>
   </tr>
   <tr>
+<br />
+<center> <a href="https://github.com/lubomirstankov/upordown2">GitHub</a> </center>
       </center>
 <div class="footer"><strong>© <?php echo date("Y"); ?> - <a href="skype:h_eaderror?chat">Stank0V</a>. Всички права запазени. <br />
 <style>
